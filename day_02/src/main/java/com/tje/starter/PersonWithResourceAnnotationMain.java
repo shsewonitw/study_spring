@@ -1,0 +1,35 @@
+package com.tje.starter;
+
+import com.tje.config.*;
+import com.tje.model.*;
+
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
+// AnnotationConfigApplicationContext 클래스
+// - 클래스 파일을 사용하여 스프링 컨테이너를 정의한 경우
+//   해당 클래스 파일을 사용하여 스프링 컨테이너를 생성할 수 있는 클래스
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+
+public class PersonWithResourceAnnotationMain {
+	public static void main(String[] args) {
+		String configLocation = "classpath:conf/personWithResourceAnnotation.xml";
+		
+		// 자바 클래스로 정의된 스프링 컨테이너를 생성하는 코드
+		// - AnnotationConfigApplicationContext 객체를 생성하여 처리 
+		// - 스프링 컨테이너가 정의된 자바 클래스의 class를 전달하여 처리
+		AbstractApplicationContext ctx = 
+				new GenericXmlApplicationContext(configLocation);
+		
+		// 클래스를 사용한 설정인 경우 @Bean 어노테이션이 적용된 메소드의 이름을 사용하여 스프링 빈 객체를 반환받을 수 있습니다.
+		PersonWithDogResource p1 = ctx.getBean("p1",PersonWithDogResource.class);
+		// 만약, @Bean 어노테이션에 name 속성이 적용된 경우 메소드명이 아닌 name속성의 값을 사용하여 스프링 빈 객체를 반환받을 수 있습니다.
+		PersonWithCatResource p2 = ctx.getBean("p2",PersonWithCatResource.class);
+
+		System.out.println(p1.getName());
+		p1.getPet().sound();
+		System.out.println(p2.getName());
+		p2.getPet().sound();
+	}
+}

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 스프링 컨테이너 구축을 위한 설정 파일 -->
+	<!-- 스프링 빈을 선언하는 파일 -->
+	<!-- 스프링 빈 : 일반 자바클래스의 객체 -->
+	<!-- beans 태그 내부에 모든 내용을 작성 -->
+	<!-- bean 태그를 사용하여 스프링 빈을 선언할 수 있음 -->
+	
+	<!-- Member member = new Member(); -->
+	<!-- member.setName("DEF"); -->
+	<!-- member.setAge(33); -->
+	<bean id="member" class="com.tje.Member">
+		<property name="name">
+			<value>하이</value>
+		</property>
+		<property name="age" value="22" />
+	</bean>
+	
+	<!-- MemberRequestUsingDI memberRequest = new MemberRequestUsingDI(member); -->
+	<bean id="memberRequest" class="com.tje.MemberRequestUsingDI">
+		<constructor-arg name="member" ref="member" />
+	</bean>
+</beans>
