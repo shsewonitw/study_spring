@@ -12,6 +12,22 @@ public class MemberSearchByIdService {
 	private MemberDAO memberDAO;
 	
 	public Object service(Object args) {
-		return memberDAO.selectById((Member)args);
+		Object result = null;
+		try {
+			result = memberDAO.selectById((Member)args);
+		} catch(Exception e) {
+			result = null;
+		}
+		return result;
+	}
+	
+	public Object service(Object args, boolean isList) {
+		Object result = null;
+		try {
+			result = memberDAO.selectByIds((Member)args);
+		} catch(Exception e) {
+			result = null;
+		}
+		return result;
 	}
 }

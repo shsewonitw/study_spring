@@ -37,7 +37,7 @@ public class MemberDAO {
 		}
 	}
 	
-public Member selectById(Member model) {
+public Member selectById(Member model) throws Exception {
 		
 		return this.jdbcTemplate.queryForObject(
 				"select * from member where member_id = ?",
@@ -45,6 +45,13 @@ public Member selectById(Member model) {
 				model.getMember_id());
 	}
 	
+public List<Member> selectByIds(Member model) {
+	List<Member> result = this.jdbcTemplate.query(
+			"select * from member where member_id like ?",
+			new MemberRowMapper(),"%" + model.getMember_id() + "%");
+	return result.isEmpty() ? null : result;
+}
+
 public List<Member> selectAll() {
 	List<Member> result = this.jdbcTemplate.query(
 			"select * from member",

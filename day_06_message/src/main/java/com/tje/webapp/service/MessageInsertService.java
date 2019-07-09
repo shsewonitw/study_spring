@@ -1,5 +1,7 @@
 package com.tje.webapp.service;
 
+import java.sql.SQLException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,11 @@ public class MessageInsertService {
 	private MessageDAO messageDAO;
 	
 	public Object service(Object args) {
-		return messageDAO.insert((Message)args);
+		try {
+			return messageDAO.insert((Message)args);
+		} catch (SQLException e) {
+			return null;
+		}
+		
 	}
 }

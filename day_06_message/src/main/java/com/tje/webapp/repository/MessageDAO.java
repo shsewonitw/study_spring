@@ -64,14 +64,14 @@ public List<Message> selectByReceiver(Message model) {
 	return result.isEmpty() ? null : result;
 }
 
-	public int insert(Message model) {
+	public int insert(Message model) throws SQLException {
 		
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		this.jdbcTemplate.update(new PreparedStatementCreator() {			
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 				PreparedStatement pstmt = 
 					con.prepareStatement(
-						"insert into member values (null, ?, ?, ?,now(), null)", 
+						"insert into message values (null, ?, ?, ?,now(), null)", 
 						 new String[]{"message_id"});
 				pstmt.setString(1, model.getSender());
 				pstmt.setString(2, model.getReceiver());
@@ -79,14 +79,14 @@ public List<Message> selectByReceiver(Message model) {
 				return pstmt;
 			}
 		}, keyHolder);
-		return keyHolder.getKey().intValue();		
+		return keyHolder.getKey().intValue();
 		
 	}
 	
 	
 	public int updateReceiveTime(Message model) {
 		return this.jdbcTemplate.update(
-				"update message set receive_time = now() where message_id = ?", 
+				"update message set receive_time = now() where message_id = ? and receive_time is null", 
 				model.getMessage_id());
 	}
 }
