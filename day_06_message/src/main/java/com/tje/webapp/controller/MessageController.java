@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import com.tje.webapp.service.*;
 import com.google.gson.Gson;
 import com.tje.webapp.model.*;
+import com.tje.webapp.setting.*;
 
 @Controller
 @RequestMapping("/message")
@@ -31,6 +32,15 @@ public class MessageController {
 	private MessageSearchByIdService messagesbIDService;
 	@Autowired
 	private MessageUpdateReceiveTimeService murtService;
+	@Autowired	
+	private MessageCountByReceiverService mcbrService;
+	@Autowired
+	private MessageCountBySenderService mcbsService;
+	@Autowired
+	private PagingInfo pagingInfo;
+	@Autowired
+	private MessageSearchBySenderService msbsService;
+	
 	
 	@GetMapping("/transform")
 	public String transformForm() {
@@ -69,17 +79,65 @@ public class MessageController {
 		return strJson;
 	}
 	
-	@GetMapping("/receive")
-	public String receiveForm(Model model, HttpSession session) {
+	private String receiveForm(
+			Integer page, Model model, HttpSession session) {
 		Member loginMember = 
-				(Member)session.getAttribute("loginMember");
+				(Member)session.getAttribute("loginMember");		
+		HashMap<String, Object> args = 
+				new HashMap<String, Object>();		
 		
+		args.put("curPageNo", page);		
 		Message message = new Message();		
 		message.setReceiver(loginMember.getMember_id());
-
-		model.addAttribute("rList", msbrService.service(message));
+		args.put("message", message);
 		
+		model.addAttribute("rList", msbrService.service(args));
+		
+		HashMap<String, Integer> result = 
+			(HashMap<String, Integer>)mcbrService.service(message);
+		model.addAttribute(
+				"r_count", result.get("totalCount"));
+		
+		int totalPageCount = (int)result.get("totalPageCount");
+		// 시작페이지와 종료페이지 처리
+		// 현재 페이지가 3인경우 한 화면에 보여줄 범위는 5
+		// 시작은 1, 종료는 5
+		// 시작 -> 현재페이지 / 페이지범위 + 1
+		// 종료 -> 시작 + 범위 - 1
+		// 1 2 3 4 5 -> 1
+		// 6 7 8 9 10 -> 6
+		int startPageNo = 
+				(page -1) / pagingInfo.getPageRange() * pagingInfo.getPageRange() +1;
+		
+ 		int endPageNo = (startPageNo + pagingInfo.getPageRange() - 1) >= totalPageCount ? totalPageCount : startPageNo + pagingInfo.getPageRange() - 1;
+		// 이전, 다음
+		// 이전을 만드는 경우 시작이 1이 아닐 때
+		// 이전페이지의 값은 시작 - 페이지점위
+		// 다음을 만드는 경우 종료가 마지막 페이지가 아닐 때
+		// 다음페이지의 값은 다음 + 1
+		int beforePageNo = startPageNo != 1 ? startPageNo - pagingInfo.getPageRange() : -1;
+		int afterPageNo = endPageNo != totalPageCount ? endPageNo + 1 : -1;
+		
+		model.addAttribute("totalPageCount", totalPageCount);
+		model.addAttribute("startPageNo", startPageNo);
+		model.addAttribute("endPageNo", endPageNo);
+		model.addAttribute("beforePageNo", beforePageNo);
+		model.addAttribute("afterPageNo", afterPageNo);
+		model.addAttribute("curPage",page);
 		return "message/receiveForm";
+	}
+		
+	@GetMapping("/receive/{pageNo}")
+	public String receiveFormWithPageNo(
+			@PathVariable("pageNo") Integer page,
+			Model model, HttpSession session) {
+		return receiveForm(page, model, session);
+	}
+		
+	@GetMapping("/receive")
+	public String receiveFormNotPageNo(			
+			Model model, HttpSession session) {
+		return receiveForm(1, model, session);
 	}
 	
 	// PathVariable : URL 정보를 변수의 값으로 사용하는 방법
@@ -87,26 +145,90 @@ public class MessageController {
 	// EX) http://www.google.com/dept/10/emp/5
 	@GetMapping("/content/{message_id}")
 	public String content(
-			Model model,
+			Model model, 
 			@PathVariable("message_id") int message_id) {
 		
 		Message message = new Message();
 		message.setMessage_id(message_id);
+		
 		murtService.service(message);
-		model.addAttribute("message",messagesbIDService.service(message));
+		model.addAttribute("message", messagesbIDService.service(message));
 		return "message/message";
+		
 	}
+	
+	@GetMapping("/send_content/{message_id}")
+	public String send_content(
+			Model model, 
+			@PathVariable("message_id") int message_id) {
+		
+		Message message = new Message();
+		message.setMessage_id(message_id);
+		
+		model.addAttribute("message", messagesbIDService.service(message));
+		return "message/send_message";
+		
+	}
+	
+	private String sendForm(
+			Integer page, Model model, HttpSession session) {
+		Member loginMember = 
+				(Member)session.getAttribute("loginMember");		
+		HashMap<String, Object> args = 
+				new HashMap<String, Object>();		
+		
+		args.put("curPageNo", page);		
+		Message message = new Message();		
+		message.setSender(loginMember.getMember_id());
+		args.put("message", message);
+		
+		model.addAttribute("rList", msbsService.service(args));
+		
+		HashMap<String, Integer> result = 
+			(HashMap<String, Integer>)mcbsService.service(message);
+		model.addAttribute(
+				"r_count", result.get("totalCount"));
+		
+		int totalPageCount = (int)result.get("totalPageCount");
+		// 시작페이지와 종료페이지 처리
+		// 현재 페이지가 3인경우 한 화면에 보여줄 범위는 5
+		// 시작은 1, 종료는 5
+		// 시작 -> 현재페이지 / 페이지범위 + 1
+		// 종료 -> 시작 + 범위 - 1
+		// 1 2 3 4 5 -> 1
+		// 6 7 8 9 10 -> 6
+		int startPageNo = 
+				(page -1) / pagingInfo.getPageRange() * pagingInfo.getPageRange() +1;
+		
+ 		int endPageNo = (startPageNo + pagingInfo.getPageRange() - 1) >= totalPageCount ? totalPageCount : startPageNo + pagingInfo.getPageRange() - 1;
+		// 이전, 다음
+		// 이전을 만드는 경우 시작이 1이 아닐 때
+		// 이전페이지의 값은 시작 - 페이지점위
+		// 다음을 만드는 경우 종료가 마지막 페이지가 아닐 때
+		// 다음페이지의 값은 다음 + 1
+		int beforePageNo = startPageNo != 1 ? startPageNo - pagingInfo.getPageRange() : -1;
+		int afterPageNo = endPageNo != totalPageCount ? endPageNo + 1 : -1;
+		
+		model.addAttribute("totalPageCount", totalPageCount);
+		model.addAttribute("startPageNo", startPageNo);
+		model.addAttribute("endPageNo", endPageNo);
+		model.addAttribute("beforePageNo", beforePageNo);
+		model.addAttribute("afterPageNo", afterPageNo);
+		model.addAttribute("curPage",page);
+		return "message/sendForm";
+	}
+		
+	@GetMapping("/send/{pageNo}")
+	public String sendFormWithPageNo(
+			@PathVariable("pageNo") Integer page,
+			Model model, HttpSession session) {
+		return sendForm(page, model, session);
+	}
+		
+	@GetMapping("/send")
+	public String sendFormNotPageNo(			
+			Model model, HttpSession session) {
+		return sendForm(1, model, session);
+	}
+	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

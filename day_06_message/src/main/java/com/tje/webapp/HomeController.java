@@ -16,9 +16,9 @@ import javax.servlet.http.HttpSession;
 public class HomeController {	
 	
 	@Autowired
-	private MessageSearchBySenderService msbsService;
+	private MessageCountByReceiverService mcbrService;
 	@Autowired
-	private MessageSearchByReceiverService msbrService;
+	private MessageCountBySenderService mcbsService;
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Model model,HttpSession session) {
@@ -29,11 +29,11 @@ public class HomeController {
 			message.setSender(member.getMember_id());
 			message.setReceiver(member.getMember_id());
 			
-			List<Message> sList = (List<Message>)msbsService.service(message);
-			model.addAttribute("s_count", sList == null ? 0 : sList.size());
+			HashMap<String,Integer> result = (HashMap<String,Integer>)mcbsService.service(message);
+			model.addAttribute("s_count", result.get("totalCount"));
 			
-			List<Message> rList = (List<Message>)msbrService.service(message);
-			model.addAttribute("r_count", rList == null ? 0 : rList.size());
+			result = (HashMap<String,Integer>)mcbrService.service(message);
+			model.addAttribute("r_count", result.get("totalCount"));
 		}
 		return "main";
 	}

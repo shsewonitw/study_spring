@@ -1,5 +1,7 @@
 package com.tje.webapp.service;
 
+import java.util.HashMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,9 @@ public class MessageSearchBySenderService {
 	private MessageDAO messageDAO;
 	
 	public Object service(Object args) {
-		return messageDAO.selectBySender(((Message)args));
+		HashMap<String, Object> values = (HashMap<String, Object>)args;
+		int curPageNo = (Integer)values.get("curPageNo");
+		Message message = (Message)values.get("message");
+		return messageDAO.selectBySender(curPageNo, message);
 	}
 }
