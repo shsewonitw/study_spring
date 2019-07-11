@@ -25,5 +25,8 @@
 	p:timeBetweenEvictionRunsMillis="10000" />
 
 	
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"
+	p:basename="message.label"
+	p:defaultEncoding="UTF-8" />
 		
 </beans>

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>  
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>  
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,7 +22,8 @@
 	<caption>로그인</caption>
 	<tr>
 		<th>아이디</th>
-		<td><input type="text" name="member_id" required></td>
+		<td><input type="text" name="member_id" value="${rememberID }" required></td>
+		<td><label>아이디기억<input type="checkbox" name="rememberID" value="true"></label></td>
 	</tr>
 	<tr>
 		<th>패스워드</th>
