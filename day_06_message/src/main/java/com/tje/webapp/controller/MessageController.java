@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,11 +38,13 @@ public class MessageController {
 	@Autowired
 	private MessageCountBySenderService mcbsService;
 	@Autowired
+	private MessageSearchByReceiverDateService msbrdService;
+	@Autowired
+	private MessageSearchBySenderDateService msbsdService;
+	@Autowired
 	private PagingInfo pagingInfo;
 	@Autowired
 	private MessageSearchBySenderService msbsService;
-	
-	
 	@GetMapping("/transform")
 	public String transformForm() {
 		return "message/transform";
@@ -104,12 +107,14 @@ public class MessageController {
 		// 시작은 1, 종료는 5
 		// 시작 -> 현재페이지 / 페이지범위 + 1
 		// 종료 -> 시작 + 범위 - 1
-		// 1 2 3 4 5 -> 1
-		// 6 7 8 9 10 -> 6
-		int startPageNo = 
-				(page -1) / pagingInfo.getPageRange() * pagingInfo.getPageRange() +1;
+		int startPageNo =
+			(page % pagingInfo.getPageRange() == 0 ? page-1 : page) 
+			/ pagingInfo.getPageRange() * pagingInfo.getPageRange() + 1;
 		
- 		int endPageNo = (startPageNo + pagingInfo.getPageRange() - 1) >= totalPageCount ? totalPageCount : startPageNo + pagingInfo.getPageRange() - 1;
+		int endPageNo = startPageNo + pagingInfo.getPageRange() - 1;
+		if( endPageNo > totalPageCount )
+			endPageNo = totalPageCount;
+		
 		// 이전, 다음
 		// 이전을 만드는 경우 시작이 1이 아닐 때
 		// 이전페이지의 값은 시작 - 페이지점위
@@ -123,7 +128,7 @@ public class MessageController {
 		model.addAttribute("endPageNo", endPageNo);
 		model.addAttribute("beforePageNo", beforePageNo);
 		model.addAttribute("afterPageNo", afterPageNo);
-		model.addAttribute("curPage",page);
+		model.addAttribute("curPage", page);
 		return "message/receiveForm";
 	}
 		
@@ -140,6 +145,48 @@ public class MessageController {
 		return receiveForm(1, model, session);
 	}
 	
+	@PostMapping("/receiveSearch")
+	public String receiveSubmit(
+			Model model,
+			@ModelAttribute("command") MessageSearchCommand command, 
+			HttpSession session) {
+		HashMap<String, Object> args = new HashMap<>();
+		args.put("command", command);
+		String receiver = 
+				((Member)session.getAttribute("loginMember")).getMember_id();
+		args.put("receiver", receiver);
+		
+		// 서비스 호출
+		List<Message> searched = 
+				(List<Message>)msbrdService.service(args);
+		
+		model.addAttribute("searched", searched);
+		model.addAttribute("searchedCount", searched == null ? 0 : searched.size());
+		
+		return "message/receiveSearchSubmit";
+	}
+	
+	@PostMapping("/sendSearch")
+	public String sendSubmit(
+			Model model,
+			@ModelAttribute("command") MessageSearchCommand command, 
+			HttpSession session) {
+		HashMap<String, Object> args = new HashMap<>();
+		args.put("command", command);
+		String receiver = 
+				((Member)session.getAttribute("loginMember")).getMember_id();
+		args.put("sender", receiver);
+		
+		// 서비스 호출
+		List<Message> searched = 
+				(List<Message>)msbsdService.service(args);
+		
+		model.addAttribute("searched", searched);
+		model.addAttribute("searchedCount", searched == null ? 0 : searched.size());
+		
+		return "message/sendSearchSubmit";
+	}
+	
 	// PathVariable : URL 정보를 변수의 값으로 사용하는 방법
 	// EX) http://www.naver.com/article/10
 	// EX) http://www.google.com/dept/10/emp/5
@@ -154,19 +201,6 @@ public class MessageController {
 		murtService.service(message);
 		model.addAttribute("message", messagesbIDService.service(message));
 		return "message/message";
-		
-	}
-	
-	@GetMapping("/send_content/{message_id}")
-	public String send_content(
-			Model model, 
-			@PathVariable("message_id") int message_id) {
-		
-		Message message = new Message();
-		message.setMessage_id(message_id);
-		
-		model.addAttribute("message", messagesbIDService.service(message));
-		return "message/send_message";
 		
 	}
 	
@@ -232,3 +266,16 @@ public class MessageController {
 	}
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

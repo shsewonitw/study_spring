@@ -32,4 +32,16 @@
 	
 	<beans:bean id="pagingInfo" class="com.tje.webapp.setting.PagingInfo" p:pagingSize="5" p:pageRange="5" />
 	
+	<!-- 스프링 컨테이너(Dispatcher Servlet)에 인터셉터 객체를 생성 -->
+	<beans:bean id="authCheckInterceptor" 
+	class="com.tje.webapp.interceptor.AuthCheckInterceptor" />
+	
+	<!-- 인터셉터 객체를 인터셉터로 등록 -->
+	<interceptors>
+		<interceptor>
+			<mapping path="/message/**" />
+			<mapping path="/member/logout" />
+			<beans:ref bean="authCheckInterceptor" />
+		</interceptor>
+	</interceptors>
 </beans:beans>

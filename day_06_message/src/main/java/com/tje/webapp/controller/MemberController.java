@@ -42,7 +42,7 @@ public class MemberController {
 			model.addAttribute("insert_result",true);
 		else
 			model.addAttribute("insert_result",false);
-		return "member/insertSubmit";
+		return "member/insertSubmit"; 
 	}
 	
 	@GetMapping("/login")

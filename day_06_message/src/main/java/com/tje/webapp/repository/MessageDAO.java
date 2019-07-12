@@ -81,7 +81,32 @@ public class MessageDAO {
 
 		return result.isEmpty() ? null : result;
 	}
+	
+	// 작성 날자를 기준으로 받은 메세지를 검색하는 메소드
+	public List<Message> selectByReceiver_Date(
+			MessageSearchCommand command, String receiver) {
+		List<Message> result = 
+				this.jdbcTemplate.query(
+						"select * from message where receiver = ? and send_time between ? and ? order by message_id",
+				new MessageRowMapper(), 
+				receiver, command.getFrom(), command.getTo());
 
+		return result.isEmpty() ? null : result;
+	}
+
+	
+	// 작성 날자를 기준으로 보낸 메세지를 검색하는 메소드
+	public List<Message> selectBySender_Date(
+			MessageSearchCommand command, String receiver) {
+		List<Message> result = 
+				this.jdbcTemplate.query(
+						"select * from message where sender = ? and send_time between ? and ? order by message_id",
+				new MessageRowMapper(), 
+				receiver, command.getFrom(), command.getTo());
+
+		return result.isEmpty() ? null : result;
+	}
+	
 	public List<Message> selectAll(int page) {
 		List<Message> result = this.jdbcTemplate.query("select * from message", new MessageRowMapper());
 

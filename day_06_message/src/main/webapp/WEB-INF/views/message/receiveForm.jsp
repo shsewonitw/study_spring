@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -55,6 +55,13 @@
 		</th>
 	</tr>
 </table>
+
+<form action="<%=request.getContextPath() %>/message/receiveSearch" method="post">
+	<p>메세지 받은 날짜(시작) : <input type="text" name="from" placeholder="EX) 2019-07-12 12:00:00"></p>
+	<p>메세지 받은 날짜(종료) : <input type="text" name="to" placeholder="EX) 2019-07-12 12:00:00"></p>
+	<p><input type="submit" value="검색"><input type="reset" value="초기화"></p>
+</form>
+
 
 <h4><a href="<%=request.getContextPath()%>">시작 화면으로 이동</a></h4>
 

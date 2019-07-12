@@ -56,6 +56,12 @@
 	</tr>
 </table>
 
+<form action="<%=request.getContextPath() %>/message/sendSearch" method="post">
+	<p>메세지 받은 날짜(시작) : <input type="text" name="from" placeholder="EX) 2019-07-12 12:00:00"></p>
+	<p>메세지 받은 날짜(종료) : <input type="text" name="to" placeholder="EX) 2019-07-12 12:00:00"></p>
+	<p><input type="submit" value="검색"><input type="reset" value="초기화"></p>
+</form>
+
 <h4><a href="<%=request.getContextPath()%>">시작 화면으로 이동</a></h4>
 
 </body>

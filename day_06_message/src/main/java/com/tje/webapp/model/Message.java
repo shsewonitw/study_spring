@@ -2,12 +2,18 @@ package com.tje.webapp.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+
 public class Message {
 	
+	@JsonIgnore
 	private int message_id;
 	private String sender;
 	private String receiver;
 	private String content;
+	@JsonFormat(pattern = "yyyy.MM.dd HH:mm:ss")
 	private Date send_time;
 	private Date receive_time;
 	
