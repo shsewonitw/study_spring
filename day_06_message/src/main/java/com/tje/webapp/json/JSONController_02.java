@@ -62,11 +62,13 @@ public class JSONController_02 {
 	@PostMapping("/json/ex_07")
 	@ResponseBody
 	public String ex_07(@RequestBody Member member) {
+		
 		System.out.println(member.getMember_id() + "," + member.getPassword() + "," + member.getName());
 		if (msbIDService.service(member) != null) {
 			System.out.println(1);
 			return "{\"result\" : \"F\"}";
 		}
+		
 		if ((Boolean) miService.service(member)) {
 			System.out.println(2);
 			return "{\"result\" : \"S\"}";
@@ -74,5 +76,7 @@ public class JSONController_02 {
 			System.out.println(3);
 			return "{\"result\" : \"F\"}";
 		}
+
+
 	}
 }

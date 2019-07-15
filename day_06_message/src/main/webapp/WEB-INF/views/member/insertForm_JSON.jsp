@@ -46,7 +46,7 @@
 
 <h3>회원정보를 입력하세요</h3>
 
-
+<form>
 <table>
 	<caption>회원가입</caption>
 	<tr>
@@ -65,6 +65,6 @@
 		<th colspan="2"><button id="btnJoin">가입</button><input type="reset" value="정보 초기화"></th>
 	</tr>
 </table>
-
+</form>
 </body>
 </html>
