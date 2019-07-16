@@ -76,7 +76,7 @@ public class JSONController_02 {
 			System.out.println(3);
 			return "{\"result\" : \"F\"}";
 		}
-
-
+		
+		
 	}
 }
