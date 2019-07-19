@@ -4,11 +4,13 @@ import java.sql.*;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.tje.webapp.dao.*;
 import com.tje.webapp.model.*;
 
-public class MemberModifyService implements Service {
+@Service
+public class MemberModifyService {
 	@Autowired
 	private MemberDAO memberDAO;
 	

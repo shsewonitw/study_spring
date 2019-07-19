@@ -1,22 +1,24 @@
 package com.tje.webapp.service;
 
-import java.sql.*;
 import java.util.*;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.tje.webapp.dao.*;
 import com.tje.webapp.model.*;
 
-@org.springframework.stereotype.Service
-public class MemberSelectService implements Service {
-	@Autowired
+@Service
+public class MemberSelectService {
+
+	@Autowired(required = true)
 	private MemberDAO memberDAO;
 	
 	public HashMap<String, Object> service(HashMap<String, Object> values) {
 		HashMap<String, Object> result = new HashMap<>();
 		Member member = (Member)values.get("member");
-		
+		System.out.println("memberDAO in service : "+memberDAO);
 		if( member.getMember_id() != null ) {
 			result.put("result", 
 					memberDAO.selectOneWhereId(member));
@@ -32,10 +34,3 @@ public class MemberSelectService implements Service {
 		return result;
 	}
 }
-
-
-
-
-
-
-

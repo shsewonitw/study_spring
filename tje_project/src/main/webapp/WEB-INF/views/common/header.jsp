@@ -195,6 +195,7 @@ $(function(){
 			data: params,
 			dataType:"text",
 			success:function(result){
+
 				if( eval(result) ) {
 					$("#idCheck").text("이미 존재하는 아이디입니다.");
 					idCheck = false;
@@ -207,6 +208,7 @@ $(function(){
 				
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
+
 				$("#idCheck").text("이미 존재하는 아이디입니다.");
 				idCheck = false;
 				imgChange();

@@ -4,11 +4,13 @@ import java.sql.*;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.tje.webapp.dao.*;
 import com.tje.webapp.model.*;
 
-@org.springframework.stereotype.Service
-public class LastInsertIdService implements Service{
+@Service
+public class LastInsertIdService {
 	
 	@Autowired
 	private RecipeDAO recipeDAO;

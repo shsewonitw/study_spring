@@ -11,6 +11,7 @@ public class MemberInsertService {
 	@Autowired
 	private MemberDAO memberDAO;
 	
+	
 	public Object service(Object args) {
 		return memberDAO.insert((Member)args) == 0 ? false : true;
 	}

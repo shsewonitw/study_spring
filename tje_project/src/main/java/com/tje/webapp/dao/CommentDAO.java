@@ -57,7 +57,7 @@ public class CommentDAO {
 	}
 	
 	
-	public boolean delete(Connection conn, Comment obj) {
+	public boolean delete(Comment obj) {
 		boolean result = false;
 		String sql = "delete from comment where comment_id = ? and member_id = ?";
 

@@ -7,8 +7,11 @@ import java.util.*;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -22,24 +25,33 @@ public class MemberDAO {
 	}
 
 	public Member selectOneWhereId(Member obj) {
+		
 		String sql = "select * from member where member_id = ?";
-		return this.jdbcTemplate.queryForObject(sql, new RowMapper<Member>() {
+		
+		return this.jdbcTemplate.query(sql, new ResultSetExtractor<Member>() {
 			@Override
-			public Member mapRow(ResultSet rs, int arg1) throws SQLException {
-				Member member = new Member(
-						rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getDate(5),rs.getDate(6));
+			public Member extractData(ResultSet rs) throws SQLException, DataAccessException {
+				Member member = null;
+				if(rs.next()) {
+					member = new Member(
+							rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getDate(5),rs.getDate(6));
+				}
 				return member;
 			}
 		}, obj.getMember_id());
+		
 	}
 	
 	public Member selectOneWhereNickName(Member obj) {
 		String sql = "select * from member where nickname = ?";
-		return this.jdbcTemplate.queryForObject(sql,new RowMapper<Member>() {
+		return this.jdbcTemplate.query(sql,new ResultSetExtractor<Member>() {
 			@Override
-			public Member mapRow(ResultSet rs, int arg1) throws SQLException {
-				Member member = new Member(
-						rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getDate(5),rs.getDate(6));
+			public Member extractData(ResultSet rs) throws SQLException, DataAccessException {
+				Member member = null;
+				if(rs.next()) {
+					member = new Member(
+							rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getDate(5),rs.getDate(6));
+				}
 				return member;
 			}
 		},obj.getNickname());
@@ -47,11 +59,14 @@ public class MemberDAO {
 	
 	public Member selectOneWhereEmail(Member obj) {
 		String sql = "select * from member where email = ?";
-		return this.jdbcTemplate.queryForObject(sql, new RowMapper<Member>() {
+		return this.jdbcTemplate.query(sql, new ResultSetExtractor<Member>() {
 			@Override
-			public Member mapRow(ResultSet rs, int arg1) throws SQLException {
-				Member member = new Member(
-				rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getDate(5),rs.getDate(6));
+			public Member extractData(ResultSet rs) throws SQLException, DataAccessException {
+				Member member = null;
+				if(rs.next()) {
+					member = new Member(
+							rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getDate(5),rs.getDate(6));
+				}
 				return member;
 			}
 		},obj.getEmail());
